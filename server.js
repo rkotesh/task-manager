@@ -1,3 +1,4 @@
+require('dotenv').config(); // Load environment variables
 const express = require('express');
 const cors = require('cors');
 const { Low } = require('lowdb');
@@ -7,18 +8,18 @@ const cron = require('node-cron');
 const fs = require('fs');
 
 const app = express();
-const PORT = 3000;
-const HOST = '0.0.0.0'; // Accept connections from any IP
-app.listen(PORT, HOST, () => {
-  console.log(`Server running at http://${HOST}:${PORT}`);
-});
 
+// Use env variables or fallback defaults
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
+const DB_URL = process.env.DATABASE_URL || 'db.json';
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ FIXED: Pass default data
-const adapter = new JSONFile('db.json');
+// Setup DB
+const adapter = new JSONFile(DB_URL);
 const db = new Low(adapter, { tasks: [] });
 
 async function initDB() {
@@ -28,6 +29,7 @@ async function initDB() {
 }
 initDB();
 
+// Routes
 app.get('/tasks', async (req, res) => {
   await db.read();
   const { status, sortBy } = req.query;
@@ -73,7 +75,7 @@ app.delete('/tasks/:id', async (req, res) => {
   res.json({ success: true });
 });
 
-// ✅ Daily Notification Simulation
+// Daily summary cron job at 9 AM
 cron.schedule('0 9 * * *', async () => {
   await db.read();
   const pendingTasks = db.data.tasks.filter(t => t.status === 'pending');
@@ -83,6 +85,7 @@ cron.schedule('0 9 * * *', async () => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// Start server
+app.listen(PORT, HOST, () => {
+  console.log(`✅ Server running at http://${HOST}:${PORT}`);
 });
