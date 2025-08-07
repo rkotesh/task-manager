@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>Task Manager</h1>
+    
+    <form id="task-form">
+      <div class="form-group">
+        <input type="text" class="title1" name="title" placeholder="Title" required /><br>
+        <br><input type="text" name="description" placeholder="Description" />
+      </div>
+      <div class="form-group">
+        <input type="date" name="dueDate" required /><br>
+        <br><select name="priority" required>
+          <option value="">Select Priority</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <button type="submit">Add Task</button>
+    </form>
+
+    <div class="filters">
+      <div class="status-buttons">
+        <button class="status-filter active" data-status="all">All</button>
+        <button class="status-filter" data-status="pending">Pending</button>
+        <button class="status-filter" data-status="completed">Completed</button>
+      </div>
+      <div class="sort-control">
+        <label for="sort">Sort by:</label>
+        <select id="sort">
+          <option value="none">None</option>
+          <option value="priority">Priority</option>
+          <option value="dueDate">Due Date</option>
+        </select>
+      </div>
+    </div>
+
+<div id="task-list" class="task-list"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
